@@ -36,11 +36,14 @@ export default function SignUpScreen() {
       // and capture OTP code
       setPendingVerification(true);
     } catch (err) {
-      console.log(err);
-      if (err.errors?.[0]?.code === "form_identifier_exists") {
+      console.log("SignUp Error:", JSON.stringify(err, null, 2));
+      const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message;
+      const genericMsg = err?.message || (typeof err === "string" ? err : JSON.stringify(err));
+      
+      if (err?.errors?.[0]?.code === "form_identifier_exists") {
         setError("That email address is already in use. Please try another.");
       } else {
-        setError(err.errors?.[0]?.longMessage || err.message || "An error occurred. Please try again.");
+        setError(clerkMsg || genericMsg || "An error occurred. Please try again.");
       }
     }
   };

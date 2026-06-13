@@ -37,11 +37,14 @@ export default function Page() {
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
-      console.log(err);
-      if (err.errors?.[0]?.code === "form_password_incorrect") {
+      console.log("SignIn Error:", JSON.stringify(err, null, 2));
+      const clerkMsg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message;
+      const genericMsg = err?.message || (typeof err === "string" ? err : JSON.stringify(err));
+      
+      if (err?.errors?.[0]?.code === "form_password_incorrect") {
         setError("Password is incorrect. Please try again.");
       } else {
-        setError(err.errors?.[0]?.longMessage || err.message || "An error occurred. Please try again.");
+        setError(clerkMsg || genericMsg || "An error occurred. Please try again.");
       }
     }
   };
